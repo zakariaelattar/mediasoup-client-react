@@ -56,7 +56,6 @@ let params = {
 var ss;
 const streamSuccess = async(stream) => {
   var localVideo = document.getElementById('localVideo');
-console.log(stream);
   localVideo.srcObject = stream;
   ss = stream;
   localVideo.onloadedmetadata = function(e) {
@@ -69,6 +68,8 @@ console.log(stream);
         track,
         ...params
     }
+
+    console.log(stream);
 }
 
 const getLocalStream = () => {
@@ -93,7 +94,6 @@ const getLocalStream = () => {
 // server side to send/recive media
 const createDevice = async() => {
   console.log('creating device');
-  console.log(mediasoupClient);
     try {
         device = new Device
 
@@ -138,7 +138,6 @@ const createSendTransport = () => {
             return
         }
 
-        console.log(params)
 
         // creates a new WebRTC Transport to send media
         // based on the server's producer transport params
@@ -150,6 +149,7 @@ const createSendTransport = () => {
         // see connectSendTransport() below
         producerTransport.on('connect', async({ dtlsParameters }, callback, errback) => {
             try {
+                console.log('++++++++++++++++++++++++++++++++++++++>')
                 // Signal local DTLS parameters to the server side transport
                 // see server's socket.on('transport-connect', ...)
                 await socket.emit('transport-connect', {
@@ -165,7 +165,6 @@ const createSendTransport = () => {
         })
 
         producerTransport.on('produce', async(parameters, callback, errback) => {
-            console.log(parameters)
 
             try {
                 // tell the server to create a Producer
@@ -189,13 +188,11 @@ const createSendTransport = () => {
 }
 
 const connectSendTransport = async() => {
-  console.log('executing circon')
     // we now call produce() to instruct the producer transport
     // to send media to the Router
     // https://mediasoup.org/documentation/v3/mediasoup-client/api/#transport-produce
     // this action will trigger the 'connect' and 'produce' events above
     producer = await producerTransport.produce(params)
-console.log(producer);
     producer.on('trackended', () => {
         console.log('track ended')
 
@@ -210,6 +207,7 @@ console.log(producer);
 }
 
 const createRecvTransport = async() => {
+    console.log('creating receiver transport')
     // see server's socket.on('consume', sender?, ...)
     // this is a call from Consumer, so sender = false
     await socket.emit('createWebRtcTransport', { sender: false }, ({ params }) => {
@@ -231,6 +229,7 @@ const createRecvTransport = async() => {
         // this event is raised when a first call to transport.produce() is made
         // see connectRecvTransport() below
         consumerTransport.on('connect', async({ dtlsParameters }, callback, errback) => {
+            console.log('transport sent the event connect')
             try {
                 // Signal local DTLS parameters to the server side transport
                 // see server's socket.on('transport-recv-connect', ...)
@@ -274,17 +273,19 @@ const connectRecvTransport = async() => {
         const { track } = consumer
 
 console.log(consumer);
-        var remoteVideo = document.getElementById('remoteVideo');
-        console.log(remoteVideo)
-        let media = new MediaStream([track]);
-        remoteVideo.srcObject = media;
-        remoteVideo.play();
-        
-        remoteVideo.onloadedmetadata = function(e) {
-          console.log('loaded');
-         
-        
-        };
+const stream = new MediaStream();
+stream.addTrack(track);
+
+    console.log('its video')
+    const video = document.createElement('video');
+    video.setAttribute('style', 'width: 400px; heigth:400px');
+    video.setAttribute('playsinline', '');
+    console.log(stream);
+    video.srcObject = stream;
+    document.getElementById('container').appendChild(video);
+    video.play();
+  
+ 
         // the server consumer started with media paused
         // so we need to inform the server to resume
         socket.emit('consumer-resume')
@@ -309,9 +310,12 @@ console.log(consumer);
                             </div>
                         </td>
                         <td>
-                            <div id="sharedBtns">
-                                <video id="remoteVideo" autoPlay class="video"></video>
+                            <div id="container">
+
                             </div>
+                            {/* <div id="sharedBtns">
+                                <video id="remoteVideo" autoPlay class="video"></video>
+                            </div> */}
                         </td>
                     </tr>
                     <tr>
