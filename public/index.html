@@ -24,8 +24,9 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <style>
-      tr {
+<style>
+  
+  tr {
           vertical-align: top;
       }
       
@@ -45,7 +46,58 @@
           display: flex;
           justify-content: center;
       }
-  </style>
+
+    button {
+        margin: 2;
+    }
+    tr {
+        vertical-align: top;
+    }
+    video {
+        width: 360px;
+        background-color: black;
+        padding: 10;
+        margin: 1px 1px;
+    }
+    .mainTable {
+        width: 100%;
+    }
+    .localColumn {
+        width: 246px;
+    }
+    .remoteColumn {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    #localVideo {
+        width: 240;
+    }
+    .remoteVideo {
+        float: left;
+    }
+
+    .videoWrap {
+        margin: 3;
+        /* padding: 5; */
+        /* background-color: papayawhip; */
+        display: flex;
+        justify-content: center;
+    }
+
+    @media only screen and (max-width: 1060px) {
+        .video {
+            width: 300px;
+        }
+    }
+
+    @media only screen and (max-width: 940px) {
+        .video {
+            width: 240px;
+        }
+    }
+
+</style>
     <title>React App</title>
   </head>
   <body>
