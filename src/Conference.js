@@ -6,7 +6,7 @@ import mediasoupClient, { Device } from 'mediasoup-client'
 import { useEffect } from 'react';
 
 
-const roomName = window.location.pathname.split('/')[2]
+const roomName = window.location.pathname.split('/')[3]
 
 // const socket = io("/mediasoup")
 const socket = io("https://chat.tifos.net/mediasoup", {
