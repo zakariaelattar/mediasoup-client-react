@@ -107,7 +107,7 @@ export default function Conference(props) {
 
     
     const joinConference = () => {
-      socket.emit('joinConference', { roomName }, (data) => {
+      socket.emit('join-conference', { roomName }, (data) => {
         console.log(`Router RTP Capabilities... ${data.rtpCapabilities}`)
         // we assign to local variable and will be used when
         // loading the client Device (see createDevice above)
@@ -473,7 +473,7 @@ export default function Conference(props) {
 
     
     const createConference = () => {
-      socket.emit('createConference', { roomName }, (data) => {
+      socket.emit('create-conference', { roomName }, (data) => {
         console.log(`Router RTP Capabilities... ${data.rtpCapabilities}`)
         // we assign to local variable and will be used when
         // loading the client Device (see createDevice above)
