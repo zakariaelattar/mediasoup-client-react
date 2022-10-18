@@ -774,7 +774,7 @@ export default function Conference(props) {
             <tr>
               <td>
               <button id="btnLocalVideo" onClick={handleStartClick} >Start conference</button>
-              <button id="btnLocalVideo" onClick={handleJoinClick} >Join conference</button>
+              {/* <button id="btnLocalVideo" onClick={handleJoinClick} >Join conference</button> */}
 
               </td>
             </tr>
