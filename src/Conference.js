@@ -679,7 +679,7 @@ export default function Conference(props) {
     socket.on('new-producer', ({ producerId }) => signalNewConsumerTransport(producerId))
     
     const getProducers = () => {
-      socket.emit('getProducers', producerIds => {
+      socket.emit('get-producers', producerIds => {
         console.log(producerIds)
         // for each of the producer create a consumer
         // producerIds.forEach(id => signalNewConsumerTransport(id))
