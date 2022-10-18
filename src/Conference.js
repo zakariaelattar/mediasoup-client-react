@@ -43,7 +43,7 @@ export default function Conference(props) {
     
     socket.on('connection-success', ({ socketId }) => {
       console.log(socketId)
-      getLocalStream();
+      joinConference();
     })
     
     let device
