@@ -16,8 +16,10 @@ export default function Conference(props) {
 
   let localVideo;
   let videoContainer;
+  let  handleInviteClick;
 
   const [token, setToken] = useState('');
+  const [speakerId, setSpeakerId] = useState(null);
 
   useEffect(() => {
     localVideo = document.getElementById('localVideo');
@@ -29,8 +31,14 @@ export default function Conference(props) {
 
   }, [])
 
+  
   const handleTokenChange = (e) => {
     setToken(e.target.value);
+  }
+
+  
+  const handleSpeakerIdChange = (e) => {
+    setSpeakerId(e.target.value);
   }
 
   const handleJoinClick = () => {
@@ -85,7 +93,7 @@ export default function Conference(props) {
     let audioParams;
     let videoParams = { params };
     let consumingTransports = [];
-    
+    let handleInviteClick;
 
   
     const streamSuccess = async (stream) => {
@@ -396,6 +404,10 @@ export default function Conference(props) {
     })
 
   }
+
+  handleInviteClick = () => {
+    socket.emit('invite-speaker',{speakerId})
+   }
   /**
    * 
    */
@@ -452,6 +464,10 @@ export default function Conference(props) {
     let videoParams = { params };
     let consumingTransports = [];
     
+
+     handleInviteClick = () => {
+      socket.emit('invite-speaker',{speakerId})
+     }
 
   
     const streamSuccess = async (stream) => {
@@ -686,6 +702,8 @@ export default function Conference(props) {
         producerIds.forEach(signalNewConsumerTransport)
       })
     }
+
+    
     
     const connectRecvTransport = async (consumerTransport, remoteProducerId, serverConsumerTransportId) => {
       // for consumer, we need to tell the server first
@@ -786,6 +804,11 @@ export default function Conference(props) {
               <td class="remoteColumn">
                 <div id="videoContainer"></div>
               </td>
+            </tr>
+            <tr>
+            <td>invite:</td>
+            <td><input type="text"  onChange={handleSpeakerIdChange}/></td>
+            <td><button onClick={handleInviteClick}></button></td>
             </tr>
           </tbody>
         </table>
