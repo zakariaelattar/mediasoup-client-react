@@ -808,7 +808,7 @@ export default function Conference(props) {
             <tr>
             <td>invite:</td>
             <td><input type="text"  onChange={handleSpeakerIdChange}/></td>
-            <td><button onClick={handleInviteClick}></button></td>
+            <td><button onClick={handleInviteClick}>invite speaker</button></td>
             </tr>
           </tbody>
         </table>
