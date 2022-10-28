@@ -16,7 +16,7 @@ export default function Conference(props) {
 
   let localVideo;
   let videoContainer;
-  let  handleInviteClick;
+  let handleInviteClick;
 
   const [token, setToken] = useState('');
   const [speakerId, setSpeakerId] = useState(null);
@@ -25,18 +25,18 @@ export default function Conference(props) {
     localVideo = document.getElementById('localVideo');
     videoContainer = document.getElementById('videoContainer');
 
- 
+
 
 
 
   }, [])
 
-  
+
   const handleTokenChange = (e) => {
     setToken(e.target.value);
   }
 
-  
+
   const handleSpeakerIdChange = (e) => {
     setSpeakerId(e.target.value);
   }
@@ -48,12 +48,12 @@ export default function Conference(props) {
 
     })
     socket.connect();
-    
+
     socket.on('connection-success', ({ socketId }) => {
       console.log(socketId)
       joinConference();
     })
-    
+
     let device
     let rtpCapabilities
     let producerTransport
@@ -62,7 +62,7 @@ export default function Conference(props) {
     let videoProducer
     let consumer
     let isProducer = false
-    
+
     // https://mediasoup.org/documentation/v3/mediasoup-client/api/#ProducerOptions
     // https://mediasoup.org/documentation/v3/mediasoup-client/api/#transport-produce
     let params = {
@@ -89,43 +89,43 @@ export default function Conference(props) {
         videoGoogleStartBitrate: 1000
       }
     }
-    
+
     let audioParams;
     let videoParams = { params };
     let consumingTransports = [];
     let handleInviteClick;
 
-  
+
     const streamSuccess = async (stream) => {
       var localVideo = document.getElementById('localVideo');
       localVideo.srcObject = stream;
       localVideo.onloadedmetadata = function (e) {
-          console.log('loaded meta');
+        console.log('loaded meta');
 
-          localVideo.play();
+        localVideo.play();
       };
-      
+
 
       console.log(stream);
       audioParams = { track: stream.getAudioTracks()[0], ...audioParams };
       videoParams = { track: stream.getVideoTracks()[0], ...videoParams };
       joinConference()
 
-  }
+    }
 
-    
+
     const joinConference = () => {
       socket.emit('join-conference', { roomName }, (data) => {
         console.log(`Router RTP Capabilities... ${data.rtpCapabilities}`)
         // we assign to local variable and will be used when
         // loading the client Device (see createDevice above)
         rtpCapabilities = data.rtpCapabilities
-    
+
         // once we have rtpCapabilities from the Router, create Device
         createDevice()
       })
     }
-    
+
     const getLocalStream = () => {
       navigator.mediaDevices.getUserMedia({
         audio: true,
@@ -140,37 +140,37 @@ export default function Conference(props) {
           }
         }
       })
-      .then(streamSuccess)
-      .catch(error => {
-        console.log(error.message)
-      })
+        .then(streamSuccess)
+        .catch(error => {
+          console.log(error.message)
+        })
     }
-    
+
     // A device is an endpoint connecting to a Router on the
     // server side to send/recive media
     const createDevice = async () => {
       try {
         device = new Device
-    
+
         // https://mediasoup.org/documentation/v3/mediasoup-client/api/#device-load
         // Loads the device with RTP capabilities of the Router (server side)
         await device.load({
           // see getRtpCapabilities() below
           routerRtpCapabilities: rtpCapabilities
         })
-    
+
         console.log('Device RTP Capabilities', device.rtpCapabilities)
-    
+
         // once the device loads, create transport
         createSendTransport()
-    
+
       } catch (error) {
         console.log(error)
         if (error.name === 'UnsupportedError')
           console.warn('browser not supported')
       }
     }
-    
+
     const createSendTransport = () => {
       // see server's socket.on('createWebRtcTransport', sender?, ...)
       // this is a call from Producer, so sender = true
@@ -181,14 +181,14 @@ export default function Conference(props) {
           console.log(params.error)
           return
         }
-    
+
         console.log(params)
-    
+
         // creates a new WebRTC Transport to send media
         // based on the server's producer transport params
         // https://mediasoup.org/documentation/v3/mediasoup-client/api/#TransportOptions
         producerTransport = device.createSendTransport(params)
-    
+
         // https://mediasoup.org/documentation/v3/communication-between-client-and-server/#producing-media
         // this event is raised when a first call to transport.produce() is made
         // see connectSendTransport() below
@@ -199,18 +199,18 @@ export default function Conference(props) {
             await socket.emit('transport-connect', {
               dtlsParameters,
             })
-    
+
             // Tell the transport that parameters were transmitted.
             callback()
-    
+
           } catch (error) {
             errback(error)
           }
         })
-    
+
         producerTransport.on('produce', async (parameters, callback, errback) => {
           console.log(parameters)
-    
+
           try {
             // tell the server to create a Producer
             // with the following parameters and produce
@@ -224,7 +224,7 @@ export default function Conference(props) {
               // Tell the transport that parameters were transmitted and provide it with the
               // server side producer's id.
               callback({ id })
-    
+
               // if producers exist, then join room
               if (producersExist) getProducers()
             })
@@ -232,50 +232,50 @@ export default function Conference(props) {
             errback(error)
           }
         })
-    
+
         connectSendTransport()
       })
     }
-    
+
     const connectSendTransport = async () => {
       // we now call produce() to instruct the producer transport
       // to send media to the Router
       // https://mediasoup.org/documentation/v3/mediasoup-client/api/#transport-produce
       // this action will trigger the 'connect' and 'produce' events above
-      
+
       audioProducer = await producerTransport.produce(audioParams);
       videoProducer = await producerTransport.produce(videoParams);
-    
+
       audioProducer.on('trackended', () => {
         console.log('audio track ended')
-    
+
         // close audio track
       })
-    
+
       audioProducer.on('transportclose', () => {
         console.log('audio transport ended')
-    
+
         // close audio track
       })
-      
+
       videoProducer.on('trackended', () => {
         console.log('video track ended')
-    
+
         // close video track
       })
-    
+
       videoProducer.on('transportclose', () => {
         console.log('video transport ended')
-    
+
         // close video track
       })
     }
-    
+
     const signalNewConsumerTransport = async (remoteProducerId) => {
       //check if we are already consuming the remoteProducerId
       if (consumingTransports.includes(remoteProducerId)) return;
       consumingTransports.push(remoteProducerId);
-    
+
       await socket.emit('createWebRtcTransport', { consumer: true }, ({ params }) => {
         // The server sends back params needed 
         // to create Send Transport on the client side
@@ -284,7 +284,7 @@ export default function Conference(props) {
           return
         }
         console.log(`PARAMS... ${params}`)
-    
+
         let consumerTransport
         try {
           consumerTransport = device.createRecvTransport(params)
@@ -295,7 +295,7 @@ export default function Conference(props) {
           console.log(error)
           return
         }
-    
+
         consumerTransport.on('connect', async ({ dtlsParameters }, callback, errback) => {
           try {
             // Signal local DTLS parameters to the server side transport
@@ -304,7 +304,7 @@ export default function Conference(props) {
               dtlsParameters,
               serverConsumerTransportId: params.id,
             })
-    
+
             // Tell the transport that parameters were transmitted.
             callback()
           } catch (error) {
@@ -312,14 +312,14 @@ export default function Conference(props) {
             errback(error)
           }
         })
-    
+
         connectRecvTransport(consumerTransport, remoteProducerId, params.id)
       })
     }
-    
+
     // server informs the client of a new producer just joined
     socket.on('new-producer', ({ producerId }) => signalNewConsumerTransport(producerId))
-    
+
     const getProducers = () => {
       socket.emit('getProducers', producerIds => {
         console.log(producerIds)
@@ -328,7 +328,7 @@ export default function Conference(props) {
         producerIds.forEach(signalNewConsumerTransport)
       })
     }
-    
+
     const connectRecvTransport = async (consumerTransport, remoteProducerId, serverConsumerTransportId) => {
       // for consumer, we need to tell the server first
       // to create a consumer based on the rtpCapabilities and consume
@@ -342,7 +342,7 @@ export default function Conference(props) {
           console.log('Cannot Consume')
           return
         }
-    
+
         console.log(`Consumer Params ${params}`)
         // then consume with the local consumer transport
         // which creates a consumer
@@ -352,7 +352,7 @@ export default function Conference(props) {
           kind: params.kind,
           rtpParameters: params.rtpParameters
         })
-    
+
         consumerTransports = [
           ...consumerTransports,
           {
@@ -362,11 +362,11 @@ export default function Conference(props) {
             consumer,
           },
         ]
-    
+
         // create a new div element for the new consumer media
         const newElem = document.createElement('div')
         newElem.setAttribute('id', `td-${remoteProducerId}`)
-    
+
         if (params.kind == 'audio') {
           //append to the audio container
           newElem.innerHTML = '<audio id="' + remoteProducerId + '" autoplay></audio>'
@@ -375,30 +375,30 @@ export default function Conference(props) {
           newElem.setAttribute('class', 'remoteVideo')
           newElem.innerHTML = '<video id="' + remoteProducerId + '" autoplay class="video" ></video>'
         }
-    
+
         videoContainer.appendChild(newElem)
-    
+
         // destructure and retrieve the video track from the producer
         const { track } = consumer
-    
+
         document.getElementById(remoteProducerId).srcObject = new MediaStream([track])
-    
+
         // the server consumer started with media paused
         // so we need to inform the server to resume
         socket.emit('consumer-resume', { serverConsumerId: params.serverConsumerId })
       })
     }
-    
+
     socket.on('producer-closed', ({ remoteProducerId }) => {
       // server notification is received when a producer is closed
       // we need to close the client-side consumer and associated transport
       const producerToClose = consumerTransports.find(transportData => transportData.producerId === remoteProducerId)
       producerToClose.consumerTransport.close()
       producerToClose.consumer.close()
-    
+
       // remove the consumer transport from the list
       consumerTransports = consumerTransports.filter(transportData => transportData.producerId !== remoteProducerId)
-    
+
       // remove the video div element
       videoContainer.removeChild(document.getElementById(`td-${remoteProducerId}`))
     })
@@ -407,26 +407,26 @@ export default function Conference(props) {
 
   handleInviteClick = () => {
     const roomId = 1;
-    socket.emit('invite-speaker',{speakerId,roomId})
-   }
+    socket.emit('invite-speaker', { speakerId, roomId })
+  }
   /**
    * 
    */
   const handleStartClick = () => {
     console.log("connecting");
     socket = io("https://chat.tifos.net/", {
-      extraHeaders:{
-        authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsInVzZXJuYW1lIjoiVXJpZWwxNjY2OSIsIm5hbWUiOiJVcmllbDE2NjY5IiwibWVkaWEiOm51bGwsImlhdCI6MTY2Njk2MDAxNCwiZXhwIjoxNjY2OTcwODE0LCJ0eXBlIjoiYWNjZXNzIn0.6naFvhC3Renlyms27K2tETgFX-phR7J7hMhuXPHz_zc"
+      extraHeaders: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsInVzZXJuYW1lIjoiVXJpZWwxNjY2OSIsIm5hbWUiOiJVcmllbDE2NjY5IiwibWVkaWEiOm51bGwsImlhdCI6MTY2Njk2MDAxNCwiZXhwIjoxNjY2OTcwODE0LCJ0eXBlIjoiYWNjZXNzIn0.6naFvhC3Renlyms27K2tETgFX-phR7J7hMhuXPHz_zc"
       }
 
     })
     socket.connect();
-    
+
     socket.on('connection-success', ({ socketId }) => {
       console.log(socketId)
       getLocalStream();
     })
-    
+
     let device
     let rtpCapabilities
     let producerTransport
@@ -435,7 +435,7 @@ export default function Conference(props) {
     let videoProducer
     let consumer
     let isProducer = false
-    
+
     // https://mediasoup.org/documentation/v3/mediasoup-client/api/#ProducerOptions
     // https://mediasoup.org/documentation/v3/mediasoup-client/api/#transport-produce
     let params = {
@@ -462,48 +462,48 @@ export default function Conference(props) {
         videoGoogleStartBitrate: 1000
       }
     }
-    
+
     let audioParams;
     let videoParams = { params };
     let consumingTransports = [];
-    
 
-     handleInviteClick = () => {
-      socket.emit('invite-speaker',{speakerId})
-     }
 
-  
+    handleInviteClick = () => {
+      socket.emit('invite-speaker', { speakerId })
+    }
+
+
     const streamSuccess = async (stream) => {
       var localVideo = document.getElementById('localVideo');
       localVideo.srcObject = stream;
       localVideo.onloadedmetadata = function (e) {
-          console.log('loaded meta');
+        console.log('loaded meta');
 
-          localVideo.play();
+        localVideo.play();
       };
-      
+
 
       console.log(stream);
       audioParams = { track: stream.getAudioTracks()[0], ...audioParams };
       videoParams = { track: stream.getVideoTracks()[0], ...videoParams };
       createConference()
 
-  }
+    }
 
-    
+
     const createConference = () => {
       const roomId = 1;
-      socket.emit('create-conference', { roomName,roomId }, (data) => {
+      socket.emit('create-conference', { roomName, roomId }, (data) => {
         console.log(`Router RTP Capabilities... ${data.rtpCapabilities}`)
         // we assign to local variable and will be used when
         // loading the client Device (see createDevice above)
         rtpCapabilities = data.rtpCapabilities
-    
+
         // once we have rtpCapabilities from the Router, create Device
         createDevice()
       })
     }
-    
+
     const getLocalStream = () => {
       navigator.mediaDevices.getUserMedia({
         audio: true,
@@ -518,37 +518,37 @@ export default function Conference(props) {
           }
         }
       })
-      .then(streamSuccess)
-      .catch(error => {
-        console.log(error.message)
-      })
+        .then(streamSuccess)
+        .catch(error => {
+          console.log(error.message)
+        })
     }
-    
+
     // A device is an endpoint connecting to a Router on the
     // server side to send/recive media
     const createDevice = async () => {
       try {
         device = new Device
-    
+
         // https://mediasoup.org/documentation/v3/mediasoup-client/api/#device-load
         // Loads the device with RTP capabilities of the Router (server side)
         await device.load({
           // see getRtpCapabilities() below
           routerRtpCapabilities: rtpCapabilities
         })
-    
+
         console.log('Device RTP Capabilities', device.rtpCapabilities)
-    
+
         // once the device loads, create transport
         createSendTransport()
-    
+
       } catch (error) {
         console.log(error)
         if (error.name === 'UnsupportedError')
           console.warn('browser not supported')
       }
     }
-    
+
     const createSendTransport = () => {
       // see server's socket.on('createWebRtcTransport', sender?, ...)
       // this is a call from Producer, so sender = true
@@ -559,14 +559,14 @@ export default function Conference(props) {
           console.log(params.error)
           return
         }
-    
+
         console.log(params)
-    
+
         // creates a new WebRTC Transport to send media
         // based on the server's producer transport params
         // https://mediasoup.org/documentation/v3/mediasoup-client/api/#TransportOptions
         producerTransport = device.createSendTransport(params)
-    
+
         // https://mediasoup.org/documentation/v3/communication-between-client-and-server/#producing-media
         // this event is raised when a first call to transport.produce() is made
         // see connectSendTransport() below
@@ -577,18 +577,18 @@ export default function Conference(props) {
             await socket.emit('transport-connect', {
               dtlsParameters,
             })
-    
+
             // Tell the transport that parameters were transmitted.
             callback()
-    
+
           } catch (error) {
             errback(error)
           }
         })
-    
+
         producerTransport.on('produce', async (parameters, callback, errback) => {
           console.log(parameters)
-    
+
           try {
             // tell the server to create a Producer
             // with the following parameters and produce
@@ -602,7 +602,7 @@ export default function Conference(props) {
               // Tell the transport that parameters were transmitted and provide it with the
               // server side producer's id.
               callback({ id })
-    
+
               // if producers exist, then join room
               if (producersExist) getProducers()
             })
@@ -610,50 +610,50 @@ export default function Conference(props) {
             errback(error)
           }
         })
-    
+
         connectSendTransport()
       })
     }
-    
+
     const connectSendTransport = async () => {
       // we now call produce() to instruct the producer transport
       // to send media to the Router
       // https://mediasoup.org/documentation/v3/mediasoup-client/api/#transport-produce
       // this action will trigger the 'connect' and 'produce' events above
-      
+
       audioProducer = await producerTransport.produce(audioParams);
       videoProducer = await producerTransport.produce(videoParams);
-    
+
       audioProducer.on('trackended', () => {
         console.log('audio track ended')
-    
+
         // close audio track
       })
-    
+
       audioProducer.on('transportclose', () => {
         console.log('audio transport ended')
-    
+
         // close audio track
       })
-      
+
       videoProducer.on('trackended', () => {
         console.log('video track ended')
-    
+
         // close video track
       })
-    
+
       videoProducer.on('transportclose', () => {
         console.log('video transport ended')
-    
+
         // close video track
       })
     }
-    
+
     const signalNewConsumerTransport = async (remoteProducerId) => {
       //check if we are already consuming the remoteProducerId
       if (consumingTransports.includes(remoteProducerId)) return;
       consumingTransports.push(remoteProducerId);
-    
+
       await socket.emit('createWebRtcTransport', { consumer: true }, ({ params }) => {
         // The server sends back params needed 
         // to create Send Transport on the client side
@@ -662,7 +662,7 @@ export default function Conference(props) {
           return
         }
         console.log(`PARAMS... ${params}`)
-    
+
         let consumerTransport
         try {
           consumerTransport = device.createRecvTransport(params)
@@ -673,7 +673,7 @@ export default function Conference(props) {
           console.log(error)
           return
         }
-    
+
         consumerTransport.on('connect', async ({ dtlsParameters }, callback, errback) => {
           try {
             // Signal local DTLS parameters to the server side transport
@@ -682,7 +682,7 @@ export default function Conference(props) {
               dtlsParameters,
               serverConsumerTransportId: params.id,
             })
-    
+
             // Tell the transport that parameters were transmitted.
             callback()
           } catch (error) {
@@ -690,14 +690,14 @@ export default function Conference(props) {
             errback(error)
           }
         })
-    
+
         connectRecvTransport(consumerTransport, remoteProducerId, params.id)
       })
     }
-    
+
     // server informs the client of a new producer just joined
     socket.on('new-producer', ({ producerId }) => signalNewConsumerTransport(producerId))
-    
+
     const getProducers = () => {
       socket.emit('get-producers', producerIds => {
         console.log(producerIds)
@@ -707,8 +707,8 @@ export default function Conference(props) {
       })
     }
 
-    
-    
+
+
     const connectRecvTransport = async (consumerTransport, remoteProducerId, serverConsumerTransportId) => {
       // for consumer, we need to tell the server first
       // to create a consumer based on the rtpCapabilities and consume
@@ -722,7 +722,7 @@ export default function Conference(props) {
           console.log('Cannot Consume')
           return
         }
-    
+
         console.log(`Consumer Params ${params}`)
         // then consume with the local consumer transport
         // which creates a consumer
@@ -732,7 +732,7 @@ export default function Conference(props) {
           kind: params.kind,
           rtpParameters: params.rtpParameters
         })
-    
+
         consumerTransports = [
           ...consumerTransports,
           {
@@ -742,11 +742,11 @@ export default function Conference(props) {
             consumer,
           },
         ]
-    
+
         // create a new div element for the new consumer media
         const newElem = document.createElement('div')
         newElem.setAttribute('id', `td-${remoteProducerId}`)
-    
+
         if (params.kind == 'audio') {
           //append to the audio container
           newElem.innerHTML = '<audio id="' + remoteProducerId + '" autoplay></audio>'
@@ -755,51 +755,44 @@ export default function Conference(props) {
           newElem.setAttribute('class', 'remoteVideo')
           newElem.innerHTML = '<video id="' + remoteProducerId + '" autoplay class="video" ></video>'
         }
-    
+
         videoContainer.appendChild(newElem)
-    
+
         // destructure and retrieve the video track from the producer
         const { track } = consumer
-    
+
         document.getElementById(remoteProducerId).srcObject = new MediaStream([track])
-    
+
         // the server consumer started with media paused
         // so we need to inform the server to resume
         socket.emit('consumer-resume', { serverConsumerId: params.serverConsumerId })
       })
     }
-    
+
     socket.on('producer-closed', ({ remoteProducerId }) => {
       // server notification is received when a producer is closed
       // we need to close the client-side consumer and associated transport
       const producerToClose = consumerTransports.find(transportData => transportData.producerId === remoteProducerId)
       producerToClose.consumerTransport.close()
       producerToClose.consumer.close()
-    
+
       // remove the consumer transport from the list
       consumerTransports = consumerTransports.filter(transportData => transportData.producerId !== remoteProducerId)
-    
+
       // remove the video div element
       videoContainer.removeChild(document.getElementById(`td-${remoteProducerId}`))
     })
-    
-    
+
+
   }
 
 
   return (
     <>
-      <input type="text" id="token" onChange={handleTokenChange} />
-      <div id="video">
+      <div className="container">
+        <div className="row">
         <table class="mainTable">
           <tbody>
-            <tr>
-              <td>
-              <button id="btnLocalVideo" onClick={handleStartClick} >Start conference</button>
-              {/* <button id="btnLocalVideo" onClick={handleJoinClick} >Join conference</button> */}
-
-              </td>
-            </tr>
             <tr>
 
               <td class="localColumn">
@@ -809,23 +802,28 @@ export default function Conference(props) {
                 <div id="videoContainer"></div>
               </td>
             </tr>
-            <tr>
-            <td>invite:</td>
-            <td><input type="text"  onChange={handleSpeakerIdChange}/></td>
-            <td><button onClick={handleInviteClick}>invite speaker</button></td>
-            </tr>
+         
           </tbody>
         </table>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        </div>
+        <div className="row">
+          <div className="col-sm-4">
+            <label htmlFor="token">Your token</label>
+            <input type="text" id="token" onChange={handleTokenChange} />
+          </div>
+          <div className="col-sm-4">
+          <button id="btnLocalVideo" onClick={handleStartClick} >Start conference</button>
+          </div>
+          <div className="col-sm-4">
+            <label htmlFor="">Invite speaker</label>
+          <input type="text" placeholder='speaker id' onChange={handleSpeakerIdChange} />
+          <button onClick={handleInviteClick}>invite speaker</button>
+          </div>
+        </div>
       </div>
+
+
+    
 
     </>
   )
