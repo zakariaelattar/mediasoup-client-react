@@ -414,9 +414,9 @@ export default function Conference(props) {
   const handleStartClick = () => {
     console.log("connecting");
     socket = io("https://chat.tifos.net/", {
-      extraHeaders:{
+     
         authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsInVzZXJuYW1lIjoiUm9iZXJ0YTE2NjY4IiwibmFtZSI6IlJvYmVydGExNjY2OCIsIm1lZGlhIjpudWxsLCJpYXQiOjE2NjY5NTg2NDAsImV4cCI6MTY2Njk2OTQ0MCwidHlwZSI6ImFjY2VzcyJ9.mTkMs1HnZQzBAEmAOuHf56JUZ5yoVWAljoXE4-hPzXM"
-      }
+      
 
     })
     socket.connect();
