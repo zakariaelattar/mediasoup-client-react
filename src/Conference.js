@@ -43,7 +43,7 @@ export default function Conference(props) {
 
   const handleJoinClick = () => {
     console.log("connecting");
-    socket = io("https://chat.tifos.net/media-group", {
+    socket = io("https://chat.tifos.net/", {
       auth: { token }
 
     })
