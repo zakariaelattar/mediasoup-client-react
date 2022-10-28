@@ -406,7 +406,8 @@ export default function Conference(props) {
   }
 
   handleInviteClick = () => {
-    socket.emit('invite-speaker',{speakerId})
+    const roomId = 3;
+    socket.emit('invite-speaker',{speakerId,roomId})
    }
   /**
    * 
