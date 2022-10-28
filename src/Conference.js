@@ -412,6 +412,7 @@ export default function Conference(props) {
   /**
    * 
    */
+  const handleConnectButtonClick = () => {}
   const handleStartClick = () => {
     console.log("connecting");
     socket = io("https://chat.tifos.net/", {
@@ -810,6 +811,7 @@ export default function Conference(props) {
           <div className="col-sm-4">
             <label htmlFor="token">Your token</label>
             <input type="text" id="token" onChange={handleTokenChange} />
+          <button id="btnLocalVideo" className='btn btn-primary' onClick={handleConnectButtonClick} >Connect</button>
           </div>
           <div className="col-sm-4">
           <button id="btnLocalVideo" className='btn btn-primary' onClick={handleStartClick} >Start conference</button>
