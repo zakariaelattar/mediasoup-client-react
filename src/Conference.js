@@ -416,7 +416,7 @@ export default function Conference(props) {
     console.log("connecting");
     socket = io("https://chat.tifos.net/", {
       extraHeaders:{
-        authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsInVzZXJuYW1lIjoiUm9iZXJ0YTE2NjY4IiwibmFtZSI6IlJvYmVydGExNjY2OCIsIm1lZGlhIjpudWxsLCJpYXQiOjE2NjY5NTg2NDAsImV4cCI6MTY2Njk2OTQ0MCwidHlwZSI6ImFjY2VzcyJ9.mTkMs1HnZQzBAEmAOuHf56JUZ5yoVWAljoXE4-hPzXM"
+        authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsInVzZXJuYW1lIjoiVXJpZWwxNjY2OSIsIm5hbWUiOiJVcmllbDE2NjY5IiwibWVkaWEiOm51bGwsImlhdCI6MTY2Njk2MDAxNCwiZXhwIjoxNjY2OTcwODE0LCJ0eXBlIjoiYWNjZXNzIn0.6naFvhC3Renlyms27K2tETgFX-phR7J7hMhuXPHz_zc"
       }
 
     })
