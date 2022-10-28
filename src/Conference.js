@@ -406,7 +406,7 @@ export default function Conference(props) {
   }
 
   handleInviteClick = () => {
-    const roomId = 3;
+    const roomId = 1;
     socket.emit('invite-speaker',{speakerId,roomId})
    }
   /**
@@ -492,7 +492,7 @@ export default function Conference(props) {
 
     
     const createConference = () => {
-      const roomId = 3;
+      const roomId = 1;
       socket.emit('create-conference', { roomName,roomId }, (data) => {
         console.log(`Router RTP Capabilities... ${data.rtpCapabilities}`)
         // we assign to local variable and will be used when
