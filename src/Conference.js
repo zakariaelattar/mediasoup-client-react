@@ -812,12 +812,12 @@ export default function Conference(props) {
             <input type="text" id="token" onChange={handleTokenChange} />
           </div>
           <div className="col-sm-4">
-          <button id="btnLocalVideo" onClick={handleStartClick} >Start conference</button>
+          <button id="btnLocalVideo" className='btn btn-primary' onClick={handleStartClick} >Start conference</button>
           </div>
           <div className="col-sm-4">
             <label htmlFor="">Invite speaker</label>
           <input type="text" placeholder='speaker id' onChange={handleSpeakerIdChange} />
-          <button onClick={handleInviteClick}>invite speaker</button>
+          <button className='btn btn-primary' onClick={handleInviteClick}>invite speaker</button>
           </div>
         </div>
       </div>
