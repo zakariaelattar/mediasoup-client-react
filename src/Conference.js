@@ -807,19 +807,30 @@ export default function Conference(props) {
           </tbody>
         </table>
         </div>
+
+
+
         <div className="row">
           <div className="col-sm-4">
             <label htmlFor="token">Your token</label>
-            <input type="text" id="token" onChange={handleTokenChange} />
-          <button id="btnLocalVideo" className='btn btn-primary' onClick={handleConnectButtonClick} >Connect</button>
+            <div className="row">
+            <input type="text" id="token" className='col-sm-4' onChange={handleTokenChange} />
+          <button id="btnLocalVideo"  className='btn btn-primary col-sm-4' onClick={handleConnectButtonClick} >Connect</button>
+
+            </div>
           </div>
+
           <div className="col-sm-4">
           <button id="btnLocalVideo" className='btn btn-primary' onClick={handleStartClick} >Start conference</button>
           </div>
+
           <div className="col-sm-4">
             <label htmlFor="">Invite speaker</label>
-          <input type="text" placeholder='speaker id' onChange={handleSpeakerIdChange} />
-          <button className='btn btn-primary' onClick={handleInviteClick}>invite speaker</button>
+            <div className="row">
+          <input type="text" placeholder='speaker id' className='col-sm-3' onChange={handleSpeakerIdChange} />
+          <button className='btn btn-primary col-sm-8' onClick={handleInviteClick}>invite speaker</button>
+
+            </div>
           </div>
         </div>
       </div>
