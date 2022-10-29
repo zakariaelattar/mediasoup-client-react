@@ -532,6 +532,7 @@ export default function Conference(props) {
     // server side to send/recive media
     const createDevice = async () => {
       try {
+        console.log('+++++++++++++++++++calling the create device')
         device = new Device
 
         // https://mediasoup.org/documentation/v3/mediasoup-client/api/#device-load
