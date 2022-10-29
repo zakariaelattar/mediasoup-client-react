@@ -20,7 +20,7 @@ export default function Conference(props) {
 
   const [token, setToken] = useState('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEzLCJ1c2VybmFtZSI6IlJleTE2NjcwIiwibmFtZSI6IlJleTE2NjcwIiwibWVkaWEiOm51bGwsImlhdCI6MTY2NzAwNzI0OCwiZXhwIjoxNjY3MDE4MDQ4LCJ0eXBlIjoiYWNjZXNzIn0.sVHiLa0o1A2Ytf2EcnYXUT08y5SyytJhfRU_4pKbFBs');
   const [speakerId, setSpeakerId] = useState(null);
-  const [roomId, setRoomId] = useState(null);
+  const [roomId, setRoomId] = useState(1);
 
   useEffect(() => {
     localVideo = document.getElementById('localVideo');
@@ -411,7 +411,6 @@ export default function Conference(props) {
   }
 
   handleInviteClick = () => {
-    const roomId = 1;
     socket.emit('invite-speaker', { speakerId, roomId })
   }
   /**
@@ -498,7 +497,6 @@ export default function Conference(props) {
 
 
     const createConference = () => {
-      const roomId = 1;
       socket.emit('create-conference', { roomName, roomId }, (data) => {
         console.log(`Router RTP Capabilities... ${data.rtpCapabilities}`)
         // we assign to local variable and will be used when
