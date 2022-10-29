@@ -20,6 +20,7 @@ export default function Conference(props) {
 
   const [token, setToken] = useState('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEzLCJ1c2VybmFtZSI6IlJleTE2NjcwIiwibmFtZSI6IlJleTE2NjcwIiwibWVkaWEiOm51bGwsImlhdCI6MTY2NzAwNzI0OCwiZXhwIjoxNjY3MDE4MDQ4LCJ0eXBlIjoiYWNjZXNzIn0.sVHiLa0o1A2Ytf2EcnYXUT08y5SyytJhfRU_4pKbFBs');
   const [speakerId, setSpeakerId] = useState(null);
+  const [roomId, setRoomId] = useState(null);
 
   useEffect(() => {
     localVideo = document.getElementById('localVideo');
@@ -34,6 +35,10 @@ export default function Conference(props) {
 
   const handleTokenChange = (e) => {
     setToken(e.target.value);
+  }
+
+  const handleRoomIdChange = (e) => {
+    setRoomId(e.target.value)
   }
 
 
@@ -815,7 +820,7 @@ export default function Conference(props) {
             <label htmlFor="token">Your token</label>
             <div className="row">
             <input type="text" id="token" className='col-sm-4' onChange={handleTokenChange} />
-          <button id="btnLocalVideo"  className='btn btn-primary col-sm-4' onClick={handleConnectButtonClick} >Connect</button>
+          {/* <button id="btnLocalVideo"  className='btn btn-primary col-sm-4' onClick={handleConnectButtonClick} >Connect</button> */}
 
             </div>
           </div>
@@ -831,6 +836,16 @@ export default function Conference(props) {
           <button className='btn btn-primary col-sm-8' onClick={handleInviteClick}>invite speaker</button>
 
             </div>
+            
+          </div>
+
+          <div className="col-sm-4">
+            <label htmlFor="">Tifo ID</label>
+            <div className="row">
+          <input type="text" onChange={handleRoomIdChange} placeholder='Tifo id' className='col-sm-3' />
+
+            </div>
+            
           </div>
         </div>
       </div>
