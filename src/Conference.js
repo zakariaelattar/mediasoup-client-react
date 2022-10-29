@@ -18,7 +18,7 @@ export default function Conference(props) {
   let videoContainer;
   let handleInviteClick;
 
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEzLCJ1c2VybmFtZSI6IlJleTE2NjcwIiwibmFtZSI6IlJleTE2NjcwIiwibWVkaWEiOm51bGwsImlhdCI6MTY2NzAwNzI0OCwiZXhwIjoxNjY3MDE4MDQ4LCJ0eXBlIjoiYWNjZXNzIn0.sVHiLa0o1A2Ytf2EcnYXUT08y5SyytJhfRU_4pKbFBs');
   const [speakerId, setSpeakerId] = useState(null);
 
   useEffect(() => {
@@ -417,7 +417,7 @@ export default function Conference(props) {
     console.log("connecting");
     socket = io("https://chat.tifos.net/", {
       extraHeaders: {
-        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsInVzZXJuYW1lIjoiVXJpZWwxNjY2OSIsIm5hbWUiOiJVcmllbDE2NjY5IiwibWVkaWEiOm51bGwsImlhdCI6MTY2Njk2MDAxNCwiZXhwIjoxNjY2OTcwODE0LCJ0eXBlIjoiYWNjZXNzIn0.6naFvhC3Renlyms27K2tETgFX-phR7J7hMhuXPHz_zc"
+        authorization: token
       }
 
     })
