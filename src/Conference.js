@@ -406,6 +406,11 @@ export default function Conference(props) {
       // remove the consumer transport from the list
       consumerTransports = consumerTransports.filter(transportData => transportData.producerId !== remoteProducerId)
 
+      let videoContainer; 
+        
+
+      videoContainer = document.getElementById('videoContainer');
+      console.log(videoContainer);
       // remove the video div element
       videoContainer.removeChild(document.getElementById(`td-${remoteProducerId}`))
     })
@@ -764,7 +769,7 @@ export default function Conference(props) {
         }
 
         let videoContainer; 
-        
+
 
         videoContainer = document.getElementById('videoContainer');
         console.log(videoContainer);
@@ -792,6 +797,12 @@ export default function Conference(props) {
       consumerTransports = consumerTransports.filter(transportData => transportData.producerId !== remoteProducerId)
 
       // remove the video div element
+
+      let videoContainer; 
+        
+
+      videoContainer = document.getElementById('videoContainer');
+      console.log(videoContainer);
       videoContainer.removeChild(document.getElementById(`td-${remoteProducerId}`))
     })
 
