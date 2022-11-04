@@ -763,7 +763,8 @@ export default function Conference(props) {
           newElem.innerHTML = '<video id="' + remoteProducerId + '" autoplay class="video" ></video>'
         }
 
-        let videoContainer;
+        let videoContainer; 
+        
 
         videoContainer = document.getElementById('videoContainer');
         console.log(videoContainer);
