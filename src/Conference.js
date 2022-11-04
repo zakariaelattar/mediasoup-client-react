@@ -15,7 +15,6 @@ let socket;
 export default function Conference(props) {
 
   let localVideo;
-  let videoContainer;
   let handleInviteClick;
 
   const [token, setToken] = useState('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEzLCJ1c2VybmFtZSI6IlJleTE2NjcwIiwibmFtZSI6IlJleTE2NjcwIiwibWVkaWEiOm51bGwsImlhdCI6MTY2NzAwNzI0OCwiZXhwIjoxNjY3MDE4MDQ4LCJ0eXBlIjoiYWNjZXNzIn0.sVHiLa0o1A2Ytf2EcnYXUT08y5SyytJhfRU_4pKbFBs');
@@ -379,6 +378,8 @@ export default function Conference(props) {
           newElem.setAttribute('class', 'remoteVideo')
           newElem.innerHTML = '<video id="' + remoteProducerId + '" autoplay class="video" ></video>'
         }
+
+        var videoContainer;
 
         videoContainer = document.getElementById('videoContainer');
 
