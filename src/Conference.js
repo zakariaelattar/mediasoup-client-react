@@ -379,7 +379,7 @@ export default function Conference(props) {
           newElem.innerHTML = '<video id="' + remoteProducerId + '" autoplay class="video" ></video>'
         }
 
-        var videoContainer;
+       let videoContainer;
 
         videoContainer = document.getElementById('videoContainer');
 
@@ -763,9 +763,10 @@ export default function Conference(props) {
           newElem.innerHTML = '<video id="' + remoteProducerId + '" autoplay class="video" ></video>'
         }
 
-        var videoContainer;
+        let videoContainer;
 
         videoContainer = document.getElementById('videoContainer');
+        console.log(videoContainer);
         videoContainer.appendChild(newElem)
 
         // destructure and retrieve the video track from the producer
