@@ -24,7 +24,6 @@ export default function Conference(props) {
 
   useEffect(() => {
     localVideo = document.getElementById('localVideo');
-    videoContainer = document.getElementById('videoContainer');
 
 
 
@@ -380,6 +379,8 @@ export default function Conference(props) {
           newElem.setAttribute('class', 'remoteVideo')
           newElem.innerHTML = '<video id="' + remoteProducerId + '" autoplay class="video" ></video>'
         }
+
+        videoContainer = document.getElementById('videoContainer');
 
         videoContainer.appendChild(newElem)
 
