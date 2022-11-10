@@ -322,7 +322,12 @@ export default function Conference(props) {
 
     // server informs the client of a new producer just joined
     socket.on('new-producer', ({ producerId }) => signalNewConsumerTransport(producerId))
+    socket.on('old-producers',(arr) => {
+      arr.map(pro=>{
+        signalNewConsumerTransport(pro)
 
+      })
+    })
     const getProducers = () => {
       console.log('getting producers');
       socket.emit('getProducers', producerIds => {
