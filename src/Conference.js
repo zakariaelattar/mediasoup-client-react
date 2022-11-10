@@ -324,6 +324,7 @@ export default function Conference(props) {
     socket.on('new-producer', ({ producerId }) => signalNewConsumerTransport(producerId))
 
     const getProducers = () => {
+      console.log('getting producers');
       socket.emit('getProducers', producerIds => {
         console.log(producerIds)
         // for each of the producer create a consumer
@@ -424,6 +425,9 @@ export default function Conference(props) {
    * 
    */
   const handleConnectButtonClick = () => {}
+
+
+
   const handleStartClick = () => {
     console.log("connecting");
     socket = io("https://chat.tifos.net/", {
@@ -504,6 +508,8 @@ export default function Conference(props) {
 
 
     const createConference = () => {
+      // roomName: uuid (members-chat-room)
+      // roomId: tifos id
       socket.emit('create-conference', { roomName, roomId }, (data) => {
         console.log(`Router RTP Capabilities... ${data.rtpCapabilities}`)
         // we assign to local variable and will be used when
@@ -662,6 +668,8 @@ export default function Conference(props) {
     }
 
     const signalNewConsumerTransport = async (remoteProducerId) => {
+
+      console.log('signaling ...');
       //check if we are already consuming the remoteProducerId
       if (consumingTransports.includes(remoteProducerId)) return;
       consumingTransports.push(remoteProducerId);
@@ -712,6 +720,7 @@ export default function Conference(props) {
 
     const getProducers = () => {
       socket.emit('get-producers', producerIds => {
+        console
         console.log(producerIds)
         // for each of the producer create a consumer
         // producerIds.forEach(id => signalNewConsumerTransport(id))
