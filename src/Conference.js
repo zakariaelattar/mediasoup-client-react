@@ -323,11 +323,12 @@ export default function Conference(props) {
     // server informs the client of a new producer just joined
     socket.on('new-producer', ({ producerId }) => signalNewConsumerTransport(producerId))
     socket.on('old-producers',(arr) => {
-      console.log("informing of others",arr);
-      arr.map(pro=>{
-        signalNewConsumerTransport(pro)
+      console.log("informing of others");
+      console.log(arr)
+      // arr.map(pro=>{
+      //   signalNewConsumerTransport(pro) 
 
-      })
+      // })
     })
     const getProducers = () => {
       console.log('getting producers');
@@ -443,6 +444,8 @@ export default function Conference(props) {
 
     })
     socket.connect();
+   
+
 
     socket.on('connection-success', ({ socketId }) => {
       console.log(socketId)
@@ -724,9 +727,13 @@ export default function Conference(props) {
     // server informs the client of a new producer just joined
     socket.on('new-producer', ({ producerId }) => signalNewConsumerTransport(producerId))
 
+    socket.on('old',(oldProducers)=>{
+      console.log('getted old producers');
+      console.log(oldProducers);
+    })
     const getProducers = () => {
       socket.emit('get-producers', producerIds => {
-        console
+         
         console.log(producerIds)
         // for each of the producer create a consumer
         // producerIds.forEach(id => signalNewConsumerTransport(id))
