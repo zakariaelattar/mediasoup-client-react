@@ -727,7 +727,7 @@ export default function Conference(props) {
     // server informs the client of a new producer just joined
     socket.on('new-producer', ({ producerId }) => signalNewConsumerTransport(producerId))
 
-    socket.on('old',(oldProducers)=>{
+    socket.on('old-producers',(oldProducers)=>{
       console.log('getted old producers');
       console.log(oldProducers);
     })
