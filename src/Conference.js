@@ -247,8 +247,14 @@ export default function Conference(props) {
       // https://mediasoup.org/documentation/v3/mediasoup-client/api/#transport-produce
       // this action will trigger the 'connect' and 'produce' events above
 
-      audioProducer = await producerTransport.produce(audioParams);
-      videoProducer = await producerTransport.produce(videoParams);
+      if(videoParams) {
+        videoProducer = await producerTransport.produce(videoParams);
+
+      }
+      if(audioParams) {
+        audioProducer = await producerTransport.produce(audioParams);
+
+      }
 
       audioProducer.on('trackended', () => {
         console.log('audio track ended')
