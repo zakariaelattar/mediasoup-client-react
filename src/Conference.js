@@ -16,6 +16,7 @@ export default function Conference(props) {
 
   let localVideo;
   let handleInviteClick;
+  let startRecording;
 
   const [token, setToken] = useState('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEzLCJ1c2VybmFtZSI6IlJleTE2NjcwIiwibmFtZSI6IlJleTE2NjcwIiwibWVkaWEiOm51bGwsImlhdCI6MTY2NzAwNzI0OCwiZXhwIjoxNjY3MDE4MDQ4LCJ0eXBlIjoiYWNjZXNzIn0.sVHiLa0o1A2Ytf2EcnYXUT08y5SyytJhfRU_4pKbFBs');
   const [speakerId, setSpeakerId] = useState(null);
@@ -428,6 +429,10 @@ export default function Conference(props) {
   handleInviteClick = () => {
     socket.emit('invite-speaker', { speakerId, roomId })
   }
+  startRecording = () => {
+    socket.emit('start-record', { })
+
+  }
   /**
    * 
    */
@@ -677,6 +682,7 @@ export default function Conference(props) {
       })
     }
 
+
     const signalNewConsumerTransport = async (remoteProducerId) => {
 
       console.log('signaling ...');
@@ -867,6 +873,11 @@ export default function Conference(props) {
 
           <div className="col-sm-4">
           <button id="btnLocalVideo" className='btn btn-primary' onClick={handleStartClick} >Start conference</button>
+          </div>
+          <div className="col-sm-4">
+            <button className="btn btn-success" onClick={startRecording}>
+              start record
+            </button>
           </div>
 
           <div className="col-sm-4">
