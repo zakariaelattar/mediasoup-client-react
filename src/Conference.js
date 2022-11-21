@@ -614,7 +614,8 @@ export default function Conference(props) {
         })
 
         producerTransport.on('produce', async (parameters, callback, errback) => {
-          console.log(parameters)
+          console.log("executing transport produce for",parameters);
+
 
           try {
             // tell the server to create a Producer
